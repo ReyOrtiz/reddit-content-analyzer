@@ -1,0 +1,38 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+README.md
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.exe
+*.test
+*.out
+
+# Dependencies
+node_modules
+vendor
+
+# Logs
+*.log
+
+# Test files
+*_test.go
+**/test/**
+**/tests/**
+
+# Mocks
+mocks/
+

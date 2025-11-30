@@ -1,0 +1,43 @@
+services:
+  backend:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: reddit-content-analyzer-api
+    ports:
+      - "8080:8080"
+    environment:
+      - API_PORT=8080
+    volumes:
+      - ./api/config.yaml:/root/config.yaml:ro
+    networks:
+      - reddit-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 -O /dev/null http://127.0.0.1:8080/swagger/index.html || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: reddit-content-analyzer-web
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - reddit-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:80 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  reddit-network:
+    driver: bridge
+

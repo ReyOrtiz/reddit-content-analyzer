@@ -1,0 +1,116 @@
+basePath: /v1
+definitions:
+  github_com_ReyOrtiz_reddit-content-analyzer_internal_contracts.RelevanceRequestDto:
+    properties:
+      created_after:
+        type: string
+      limit:
+        type: integer
+      min_num_comments:
+        type: integer
+      relevance_threshold:
+        type: number
+      search_method:
+        allOf:
+        - $ref: '#/definitions/github_com_ReyOrtiz_reddit-content-analyzer_internal_contracts.SearchMethod'
+        enum:
+        - search
+        - latest
+      subreddits:
+        items:
+          type: string
+        type: array
+      topic:
+        type: string
+    required:
+    - search_method
+    - topic
+    type: object
+  github_com_ReyOrtiz_reddit-content-analyzer_internal_contracts.RelevanceResponseDto:
+    properties:
+      posts:
+        items:
+          $ref: '#/definitions/github_com_ReyOrtiz_reddit-content-analyzer_internal_contracts.SubRedditPostDto'
+        type: array
+    type: object
+  github_com_ReyOrtiz_reddit-content-analyzer_internal_contracts.SearchMethod:
+    enum:
+    - search
+    - latest
+    type: string
+    x-enum-varnames:
+    - SearchMethodSearch
+    - SearchMethodLatest
+  github_com_ReyOrtiz_reddit-content-analyzer_internal_contracts.SubRedditPostDto:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      is_relevant:
+        type: boolean
+      num_comments:
+        type: integer
+      relevance_score:
+        type: number
+      relevance_summary:
+        type: string
+      score:
+        type: integer
+      subreddit_name:
+        type: string
+      title:
+        type: string
+      url:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+    url: http://www.example.com/support
+  description: API for analyzing and searching relevant Reddit content based on topics
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Reddit Content Analyzer API
+  version: "1.0"
+paths:
+  /v1/reddit/relevance/search:
+    post:
+      consumes:
+      - application/json
+      description: Searches Reddit posts based on a topic and returns posts that are
+        relevant according to the specified criteria
+      parameters:
+      - description: Search request parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_ReyOrtiz_reddit-content-analyzer_internal_contracts.RelevanceRequestDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response with relevant posts
+          schema:
+            $ref: '#/definitions/github_com_ReyOrtiz_reddit-content-analyzer_internal_contracts.RelevanceResponseDto'
+        "400":
+          description: Bad request - invalid input parameters
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Search for relevant Reddit posts
+      tags:
+      - reddit
+swagger: "2.0"

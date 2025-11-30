@@ -246,11 +246,113 @@
   color: #555;
   margin-top: 0.5rem;
   line-height: 1.5;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .post-content-preview {
-  white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+.post-content-preview h1,
+.post-content-preview h2,
+.post-content-preview h3,
+.post-content-preview h4,
+.post-content-preview h5,
+.post-content-preview h6 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  color: #333;
+}
+
+.post-content-preview h1 { font-size: 1.5em; }
+.post-content-preview h2 { font-size: 1.3em; }
+.post-content-preview h3 { font-size: 1.1em; }
+
+.post-content-preview p {
+  margin: 0.5em 0;
+}
+
+.post-content-preview ul,
+.post-content-preview ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+}
+
+.post-content-preview li {
+  margin: 0.25em 0;
+}
+
+.post-content-preview code {
+  background-color: #f4f4f4;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+.post-content-preview pre {
+  background-color: #f4f4f4;
+  padding: 1em;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 0.5em 0;
+}
+
+.post-content-preview pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+.post-content-preview blockquote {
+  border-left: 3px solid #ddd;
+  padding-left: 1em;
+  margin: 0.5em 0;
+  color: #666;
+  font-style: italic;
+}
+
+.post-content-preview a {
+  color: #ff4500;
+  text-decoration: none;
+}
+
+.post-content-preview a:hover {
+  text-decoration: underline;
+}
+
+.post-content-preview strong {
+  font-weight: 600;
+  color: #333;
+}
+
+.post-content-preview em {
+  font-style: italic;
+}
+
+.post-content-preview hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 1em 0;
+}
+
+.post-content-preview table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.5em 0;
+}
+
+.post-content-preview table th,
+.post-content-preview table td {
+  border: 1px solid #ddd;
+  padding: 0.5em;
+  text-align: left;
+}
+
+.post-content-preview table th {
+  background-color: #f4f4f4;
+  font-weight: 600;
 }
 
 .relevance-summary {
