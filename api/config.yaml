@@ -1,0 +1,21 @@
+api:
+  port: 8080
+
+logging:
+  level: info
+  format: json
+  output: stdout
+  max_size: 100MB
+  max_backups: 10
+  max_age: 30d
+  compress: false
+  compress_level: 6
+  compress_extension: .gz
+  compress_format: gzip
+  compress_format_level: 6
+  compress_format_extension: .gz
+
+llm:
+  base_url: "http://127.0.0.1:1234/v1"
+  embedding_model: "text-embedding-mxbai-embed-large-v1"
+  summarization_model: "openai/gpt-oss-20b"
