@@ -9,6 +9,12 @@ import (
 	"time"
 )
 
+// ClientInterface defines the interface for Reddit client operations
+type ClientInterface interface {
+	GetPosts(subreddit string, limit int) (*RedditResponse, error)
+	SearchPosts(subreddit string, query string, limit int) (*RedditResponse, error)
+}
+
 // Client represents a Reddit API client
 type Client struct {
 	httpClient *http.Client
@@ -23,6 +29,17 @@ func NewClient() *Client {
 			Timeout: 30 * time.Second,
 		},
 		baseURL:   "https://www.reddit.com",
+		userAgent: "reddit-content-analyzer/1.0",
+	}
+}
+
+// NewTestClient creates a new Reddit client for testing with a custom baseURL
+func NewTestClient(baseURL string) *Client {
+	return &Client{
+		httpClient: &http.Client{
+			Timeout: 30 * time.Second,
+		},
+		baseURL:   baseURL,
 		userAgent: "reddit-content-analyzer/1.0",
 	}
 }

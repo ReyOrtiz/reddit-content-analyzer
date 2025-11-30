@@ -19,12 +19,16 @@ func GetConfig() *viper.Viper {
 		config.SetConfigName("config")
 		config.SetConfigType("yaml")
 		config.AddConfigPath("./")
+		config.AddConfigPath("../")    // For tests running from subdirectories
+		config.AddConfigPath("../../") // For tests running from deeper subdirectories
 		config.AutomaticEnv()
 		config.WatchConfig()
 
 		if err := config.ReadInConfig(); err != nil {
 			if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-				log.Fatalf("Config file not found: %v", err)
+				// Config file not found - use defaults and environment variables
+				// This is acceptable for tests or when using env vars only
+				log.Printf("Config file not found, using defaults and environment variables: %v", err)
 			} else {
 				log.Fatalf("Error reading config file: %v", err)
 			}

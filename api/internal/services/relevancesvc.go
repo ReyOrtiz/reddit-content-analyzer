@@ -19,7 +19,7 @@ type RelevanceService interface {
 
 type relevanceService struct {
 	logger        *zap.Logger
-	llmClient     *llm.Client
+	llmClient     llm.ClientInterface
 	redditService RedditService
 }
 
