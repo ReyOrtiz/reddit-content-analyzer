@@ -22,6 +22,12 @@ var (
 	once   sync.Once
 )
 
+// ClientInterface defines the interface for LLM client operations
+type ClientInterface interface {
+	GetEmbedding(ctx context.Context, text string) ([]float32, error)
+	Chat(ctx context.Context, messages []Message) (string, error)
+}
+
 // Client represents an LLM client using Genkit Go
 type Client struct {
 	genkit         *genkit.Genkit
@@ -167,58 +173,6 @@ func (c *Client) GetEmbedding(ctx context.Context, text string) ([]float32, erro
 	return embeddingResp.Data[0].Embedding, nil
 }
 
-// GetEmbeddings generates embeddings for multiple texts
-func (c *Client) GetEmbeddings(ctx context.Context, texts []string) ([][]float32, error) {
-	c.logger.Info("Generating embeddings", zap.Int("count", len(texts)), zap.String("model", c.embeddingModel))
-
-	url := fmt.Sprintf("%s/embeddings", c.baseURL)
-	req := EmbeddingRequest{
-		Input: texts,
-		Model: c.embeddingModel,
-	}
-
-	jsonData, err := json.Marshal(req)
-	if err != nil {
-		c.logger.Error("Error marshaling embeddings request", zap.Error(err))
-		return nil, fmt.Errorf("failed to marshal request: %w", err)
-	}
-
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", url, bytes.NewBuffer(jsonData))
-	if err != nil {
-		c.logger.Error("Error creating embeddings request", zap.Error(err))
-		return nil, fmt.Errorf("failed to create request: %w", err)
-	}
-
-	httpReq.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.httpClient.Do(httpReq)
-	if err != nil {
-		c.logger.Error("Error calling embeddings API", zap.Error(err))
-		return nil, fmt.Errorf("failed to call API: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
-		c.logger.Error("Embeddings API returned error", zap.Int("status", resp.StatusCode), zap.String("body", string(body)))
-		return nil, fmt.Errorf("API returned status %d: %s", resp.StatusCode, string(body))
-	}
-
-	var embeddingResp EmbeddingResponse
-	if err := json.NewDecoder(resp.Body).Decode(&embeddingResp); err != nil {
-		c.logger.Error("Error decoding embeddings response", zap.Error(err))
-		return nil, fmt.Errorf("failed to decode response: %w", err)
-	}
-
-	embeddings := make([][]float32, len(embeddingResp.Data))
-	for i, data := range embeddingResp.Data {
-		embeddings[i] = data.Embedding
-	}
-
-	c.logger.Info("Embeddings generated successfully", zap.Int("count", len(embeddings)))
-	return embeddings, nil
-}
-
 // Chat sends a chat message and returns the model's response
 func (c *Client) Chat(ctx context.Context, messages []Message) (string, error) {
 	c.logger.Info("Sending chat message", zap.String("model", c.chatModel), zap.Int("message_count", len(messages)))
@@ -285,47 +239,4 @@ func (c *Client) Chat(ctx context.Context, messages []Message) (string, error) {
 	responseText := chatResp.Choices[0].Message.Content
 	c.logger.Info("Chat response received", zap.String("response", responseText))
 	return responseText, nil
-}
-
-// ChatWithGenkit uses Genkit's native API for chat (alternative to HTTP-based Chat)
-func (c *Client) ChatWithGenkit(ctx context.Context, prompt string) (string, error) {
-	c.logger.Info("Sending chat message via Genkit", zap.String("prompt", prompt))
-
-	// Use Genkit's Generate function
-	response, err := genkit.Generate(ctx, c.genkit,
-		ai.WithPrompt(prompt),
-	)
-	if err != nil {
-		c.logger.Error("Error generating response with Genkit", zap.Error(err))
-		return "", fmt.Errorf("failed to generate response: %w", err)
-	}
-
-	responseText := response.Text()
-	c.logger.Info("Chat response received via Genkit", zap.String("response", responseText))
-	return responseText, nil
-}
-
-// EmbedWithGenkit uses Genkit's native API for embeddings (alternative to HTTP-based GetEmbedding)
-// Note: This requires an embedder to be registered with Genkit. For OpenAI-compatible APIs,
-// the HTTP-based GetEmbedding method is recommended.
-func (c *Client) EmbedWithGenkit(ctx context.Context, text string) ([]float32, error) {
-	c.logger.Info("Generating embedding via Genkit", zap.String("text", text))
-
-	// Use Genkit's Embed function with WithTextDocs
-	embedResp, err := genkit.Embed(ctx, c.genkit,
-		ai.WithTextDocs(text),
-	)
-	if err != nil {
-		c.logger.Error("Error generating embedding with Genkit", zap.Error(err))
-		return nil, fmt.Errorf("failed to generate embedding: %w", err)
-	}
-
-	if len(embedResp.Embeddings) == 0 {
-		return nil, fmt.Errorf("no embeddings in response")
-	}
-
-	// Extract the embedding values
-	result := embedResp.Embeddings[0].Embedding
-	c.logger.Info("Embedding generated via Genkit", zap.Int("dimension", len(result)))
-	return result, nil
 }

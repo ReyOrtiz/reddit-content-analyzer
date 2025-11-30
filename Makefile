@@ -9,3 +9,6 @@ run-web:
 
 run-backend:
 	cd api && go run cmd/main.go
+
+run-tests:
+	cd api && go test ./...

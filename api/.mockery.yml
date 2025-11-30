@@ -1,0 +1,37 @@
+all: false
+dir: '{{.InterfaceDir}}'
+filename: mocks_test.go
+force-file-write: true
+formatter: goimports
+generate: true
+include-auto-generated: false
+log-level: info
+structname: '{{.Mock}}{{.InterfaceName}}'
+pkgname: '{{.SrcPackageName}}'
+recursive: false
+require-template-schema-exists: true
+template: testify
+template-schema: '{{.Template}}.schema.json'
+packages:
+  github.com/ReyOrtiz/reddit-content-analyzer/internal/infra/llm:
+    interfaces:
+      ClientInterface:
+        config:
+          dir: mocks/llm
+          filename: mock_client.go
+  github.com/ReyOrtiz/reddit-content-analyzer/internal/infra/reddit:
+    interfaces:
+      ClientInterface:
+        config:
+          dir: mocks/reddit
+          filename: mock_client.go
+  github.com/ReyOrtiz/reddit-content-analyzer/internal/services:
+    interfaces:
+      RedditService:
+        config:
+          dir: mocks/services
+          filename: mock_reddit_service.go
+      RelevanceService:
+        config:
+          dir: mocks/services
+          filename: mock_relevance_service.go
