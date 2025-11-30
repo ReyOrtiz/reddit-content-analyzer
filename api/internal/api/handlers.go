@@ -23,6 +23,17 @@ func NewRelevanceHandler(relevanceService services.RelevanceService) *RelevanceH
 	}
 }
 
+// GetRelevantPosts godoc
+// @Summary      Search for relevant Reddit posts
+// @Description  Searches Reddit posts based on a topic and returns posts that are relevant according to the specified criteria
+// @Tags         reddit
+// @Accept       json
+// @Produce      json
+// @Param        request  body      contracts.RelevanceRequestDto  true  "Search request parameters"
+// @Success      200      {object}  contracts.RelevanceResponseDto  "Successful response with relevant posts"
+// @Failure      400      {object}  map[string]string              "Bad request - invalid input parameters"
+// @Failure      500      {object}  map[string]string              "Internal server error"
+// @Router       /v1/reddit/relevance/search [post]
 func (h *RelevanceHandler) GetRelevantPosts(c *gin.Context) {
 	h.logger.Info("Searching Reddit posts", zap.Any("request", c.Request.Body))
 

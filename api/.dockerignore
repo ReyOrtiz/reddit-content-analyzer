@@ -1,0 +1,41 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+README.md
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.exe
+*.test
+*.out
+reddit-content-analyzer
+
+# Dependencies
+vendor
+
+# Logs
+*.log
+
+# Test files
+*_test.go
+**/test/**
+**/tests/**
+
+# Mocks
+mocks/
+
+# Docs (will be generated during build)
+docs/
+

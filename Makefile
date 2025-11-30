@@ -12,3 +12,6 @@ run-backend:
 
 run-tests:
 	cd api && go test ./...
+
+run-docker:
+	docker-compose up --build -d

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 import './App.css'
 import SubredditsList from './components/SubredditsList'
 import { searchRedditPosts } from './services/api'
@@ -179,7 +180,9 @@ function App() {
                   </div>
                   {post.content && (
                     <div className="post-content">
-                      <p className="post-content-preview">{post.content}</p>
+                      <div className="post-content-preview">
+                        <ReactMarkdown>{post.content}</ReactMarkdown>
+                      </div>
                     </div>
                   )}
                   {post.relevance_summary && (
